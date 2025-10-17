@@ -1,0 +1,96 @@
+<div class="detail-overlay" (click)="onClose()">
+    <div class="detail-content" (click)="$event.stopPropagation()">
+        <div class="detail-header">
+            <h2>Détails du Paiement</h2>
+            <button class="btn-close" (click)="onClose()">×</button>
+        </div>
+
+        <div class="detail-body">
+            <div class="receipt-card">
+                <div class="receipt-header">
+                    <div class="receipt-title">REÇU DE PAIEMENT</div>
+                    <div class="receipt-number">{{ paiement.numeroRecu }}</div>
+                </div>
+
+                <div class="receipt-body">
+                    <div class="info-section">
+                        <h3>Informations du Paiement</h3>
+                        <div class="info-grid">
+                            <div class="info-group">
+                                <label>Numéro de reçu:</label>
+                                <span class="value">{{ paiement.numeroRecu }}</span>
+                            </div>
+
+                            <div class="info-group highlight">
+                                <label>Montant:</label>
+                                <span class="value montant">{{ formatMontant(paiement.montant) }}</span>
+                            </div>
+
+                            <div class="info-group">
+                                <label>Motif:</label>
+                                <span class="value">{{ paiement.motif }}</span>
+                            </div>
+
+                            <div class="info-group">
+                                <label>Date de paiement:</label>
+                                <span class="value">{{ formatDate(paiement.datePaiement) }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section" *ngIf="paiement.etudiantNom">
+                        <h3>Informations de l'Étudiant</h3>
+                        <div class="info-grid">
+                            <div class="info-group">
+                                <label>Nom complet:</label>
+                                <span class="value">
+                                    {{ paiement.etudiantPrenom }} {{ paiement.etudiantNom }}
+                                </span>
+                            </div>
+
+                            <div class="info-group">
+                                <label>Matricule:</label>
+                                <span class="value">{{ paiement.etudiantMatricule }}</span>
+                            </div>
+
+                            <div class="info-group">
+                                <label>ID Étudiant:</label>
+                                <span class="value">{{ paiement.etudiantId }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-section">
+                        <h3>Informations Techniques</h3>
+                        <div class="info-grid">
+                            <div class="info-group">
+                                <label>ID Paiement:</label>
+                                <span class="value">{{ paiement.id }}</span>
+                            </div>
+
+                            <div class="info-group">
+                                <label>ID Étudiant:</label>
+                                <span class="value">{{ paiement.etudiantId }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="receipt-footer">
+                    <div class="signature">
+                        <div class="signature-line"></div>
+                        <div class="signature-label">Signature</div>
+                    </div>
+                    <div class="timestamp">
+                        Consulté le {{ getCurrentDate() }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-footer">
+            <button class="btn-close-footer" (click)="onClose()">Fermer</button>
+            <button class="btn-print" (click)="printReceipt()">🖨️ Imprimer</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,27 @@
+.navbar-brand {
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-weight: 500;
+    margin: 0 0.5rem;
+    transition: all 0.3s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+
+    &.active {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        font-weight: 600;
+    }
+}
+
+.main-content {
+    min-height: calc(100vh - 120px);
+}
+
+footer {
+    margin-top: auto;
+}

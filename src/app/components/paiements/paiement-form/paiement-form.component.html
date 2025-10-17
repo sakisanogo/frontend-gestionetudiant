@@ -1,0 +1,60 @@
+<div class="paiement-form-container">
+    <button *ngIf="!showForm" (click)="toggleForm()" class="btn btn-primary mb-3">
+        + Nouveau Paiement
+    </button>
+
+    <div *ngIf="showForm" class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Nouveau Paiement</h5>
+            <button (click)="toggleForm()" class="btn btn-sm btn-outline-secondary">×</button>
+        </div>
+
+        <div class="card-body">
+            <form (ngSubmit)="onSubmit()" #paiementForm="ngForm">
+
+                <!-- Étudiant -->
+                <div class="mb-3">
+                    <label for="etudiantId" class="form-label">Étudiant *</label>
+                    <select id="etudiantId" [(ngModel)]="paiement.etudiantId" name="etudiantId" class="form-select"
+                        required>
+                        <option value="0">Sélectionnez un étudiant</option>
+                        <option *ngFor="let etudiant of etudiants" [value]="etudiant.id">
+                            {{ etudiant.prenom }} {{ etudiant.nom }} - {{ etudiant.matricule }}
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Montant -->
+                <div class="mb-3">
+                    <label for="montant" class="form-label">Montant (FCFA) *</label>
+                    <input type="number" id="montant" [(ngModel)]="paiement.montant" name="montant" class="form-control"
+                        placeholder="Entrez le montant" min="20000" max="500000" required>
+                </div>
+
+                <!-- Motif -->
+                <div class="mb-3">
+                    <label for="motif" class="form-label">Motif *</label>
+                    <textarea id="motif" [(ngModel)]="paiement.motif" name="motif" class="form-control"
+                        placeholder="Motif du paiement" rows="3" required></textarea>
+                </div>
+
+                <!-- Message d'erreur -->
+                <div *ngIf="error" class="alert alert-danger">
+                    {{ error }}
+                </div>
+
+                <!-- Boutons -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success" [disabled]="!isFormValid() || isSubmitting">
+                        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+                        {{ isSubmitting ? 'Création...' : 'Créer le paiement' }}
+                    </button>
+
+                    <button type="button" (click)="toggleForm()" class="btn btn-outline-secondary">
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

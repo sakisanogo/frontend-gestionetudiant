@@ -44,3 +44,17 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Créer le fichier .gitignore
+echo "/node_modules
+/dist
+/.angular
+/.vscode
+/.idea
+/.cache
+/coverage
+*.log
+.env
+.env.local
+.DS_Store
+Thumbs.db" > .gitignore

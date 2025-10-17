@@ -1,0 +1,81 @@
+<div class="container mt-4">
+    <!-- En-tête de page -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h1 class="mb-1">💰 {{ title }}</h1>
+            <p class="text-muted mb-0">
+                Gestion complète des paiements des étudiants
+            </p>
+        </div>
+
+        <!-- Statistiques rapides -->
+        <div class="text-end">
+            <div class="card bg-light">
+                <div class="card-body py-2">
+                    <small class="text-muted">Total des paiements</small>
+                    <div class="h5 mb-0" [class.text-muted]="loading">
+                        {{ loading ? '...' : totalPaiements }}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Indicateur de chargement global -->
+    <div *ngIf="loading" class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-2 text-muted">Chargement des données...</p>
+    </div>
+
+    <!-- Contenu principal -->
+    <div *ngIf="!loading">
+        <!-- Section formulaire de création -->
+        <section class="mb-5">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">
+                        Créer un nouveau paiement
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <app-paiement-form (paiementCreated)="onPaiementCreated($event)">
+                    </app-paiement-form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section liste des paiements -->
+        <section>
+            <div class="card">
+                <!--div class="card-header bg-secondary text-white d-flex justify-content-between align-items-center">
+                    <h5 class="card-title mb-0">
+                        Liste des paiements
+                    </h5>
+                    <button class="btn btn-light btn-sm" (click)="onRefresh()" title="Rafraîchir la liste">
+                        Actualiser
+                    </button>
+                </div-->
+                <div class="card-body">
+                    <app-paiement-list></app-paiement-list>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section informations -->
+        <!--section class="mt-4">
+            <div class="alert alert-info">
+                <h6 class="alert-heading">
+                    Informations importantes
+                </h6>
+                <ul class="mb-0">
+                    <li>Les numéros de reçu sont générés automatiquement</li>
+                    <li>Chaque paiement est lié à un étudiant spécifique</li>
+                    <li>Vous pouvez consulter l'historique des paiements par étudiant</li>
+                    <li>Le système vérifie automatiquement les doublons de reçus</li>
+                </ul>
+            </div>
+        </section-->
+    </div>
+</div>

@@ -1,0 +1,62 @@
+<div class="paiement-list-container">
+    <div class="header">
+        <h2>Liste des Paiements</h2>
+        <button class="btn-refresh" (click)="refresh()" [disabled]="loading">
+            🔄 Rafraîchir
+        </button>
+    </div>
+
+    <div *ngIf="loading" class="loading">Chargement des paiements...</div>
+
+    <div *ngIf="error" class="error-alert">
+        {{ error }}
+        <button (click)="refresh()">Réessayer</button>
+    </div>
+
+    <div *ngIf="!loading && paiements.length === 0" class="no-data">
+        Aucun paiement enregistré
+    </div>
+
+    <div *ngIf="!loading && paiements.length > 0" class="paiements-table-container">
+        <table class="paiements-table">
+            <thead>
+                <tr>
+                    <th>Numéro Reçu</th>
+                    <th>Étudiant</th>
+                    <th>Motif</th>
+                    <th>Montant</th>
+                    <th>Date</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let paiement of paiements">
+                    <td class="numero-recu">{{ paiement.numeroRecu }}</td>
+                    <td class="etudiant-info">
+                        <!-- 🔥 CORRECTION : Utiliser paiement.etudiant.prenom au lieu de paiement.etudiantPrenom -->
+                        <div *ngIf="paiement.etudiant; else noEtudiant" class="etudiant-name">
+                            {{ paiement.etudiant.prenom }} {{ paiement.etudiant.nom }}
+                        </div>
+                        <div *ngIf="paiement.etudiant" class="etudiant-matricule">
+                            {{ paiement.etudiant.matricule }}
+                        </div>
+                        <ng-template #noEtudiant>
+                            <div class="text-muted">-</div>
+                        </ng-template>
+                    </td>
+                    <td class="motif">{{ paiement.motif }}</td>
+                    <td class="montant">{{ formatMontant(paiement.montant) }}</td>
+                    <td class="date">{{ formatDate(paiement.datePaiement) }}</td>
+                    <td class="actions">
+                        <button class="btn-detail" (click)="viewDetail(paiement)" title="Voir détails">
+                            Détails
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <app-paiement-details *ngIf="selectedPaiement" [paiement]="selectedPaiement" (close)="selectedPaiement = null">
+    </app-paiement-details>
+</div>

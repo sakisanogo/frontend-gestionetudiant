@@ -1,0 +1,75 @@
+<div class="detail-overlay" (click)="onClose()">
+    <div class="detail-content" (click)="$event.stopPropagation()">
+        <div class="detail-header">
+            <h2>Détails de l'Étudiant</h2>
+            <button class="btn-close" (click)="onClose()">×</button>
+        </div>
+
+        <div class="detail-body">
+            <div class="etudiant-info">
+                <h3>Informations Personnelles</h3>
+                <div class="info-grid">
+                    <div class="info-group">
+                        <label>Matricule:</label>
+                        <span class="value">{{ etudiant.matricule }}</span>
+                    </div>
+                    <div class="info-group">
+                        <label>Nom:</label>
+                        <span class="value">{{ etudiant.nom }}</span>
+                    </div>
+                    <div class="info-group">
+                        <label>Prénom:</label>
+                        <span class="value">{{ etudiant.prenom }}</span>
+                    </div>
+                    <div class="info-group">
+                        <label>ID:</label>
+                        <span class="value">{{ etudiant.id }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="paiements-section">
+                <div class="section-header">
+                    <h3>Historique des Paiements</h3>
+                    <button class="btn-toggle-paiements" (click)="togglePaiements()">
+                        {{ showPaiements ? 'Masquer' : 'Afficher' }} les paiements
+                    </button>
+                </div>
+
+                <div *ngIf="showPaiements" class="paiements-list">
+                    <div *ngIf="loading" class="loading">
+                        <p>Chargement des paiements en cours...</p>
+                    </div>
+
+                    <div *ngIf="!loading && paiements.length === 0" class="no-data">
+                        <p>Aucun paiement enregistré pour cet étudiant</p>
+                    </div>
+
+                    <div *ngIf="!loading && paiements.length > 0" class="paiements-content">
+                        <div class="total-paiements">
+                            <strong>Total des paiements: {{ formatMontant(totalPaiements) }}</strong>
+                        </div>
+
+                        <div class="paiements-grid">
+                            <div *ngFor="let paiement of paiements" class="paiement-card">
+                                <div class="paiement-header">
+                                    <span class="numero-recu">{{ paiement.numeroRecu }}</span>
+                                    <span class="montant">{{ formatMontant(paiement.montant) }}</span>
+                                </div>
+                                <div class="paiement-body">
+                                    <div class="motif"><strong>Motif:</strong> {{ paiement.motif }}</div>
+                                    <div class="date"><strong>Date:</strong> {{ formatDate(paiement.datePaiement) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-footer">
+            <button class="btn-close-footer" (click)="onClose()">Fermer</button>
+        </div>
+    </div>
+</div>

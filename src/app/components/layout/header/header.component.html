@@ -1,0 +1,48 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container">
+        <a class="navbar-brand" routerLink="/dashboard">
+            <strong>🏫 Gestion Scolaire</strong>
+        </a>
+
+        <div class="collapse navbar-collapse">
+            <!-- Menu navigation -->
+            <ul class="navbar-nav me-auto" *ngIf="isLoggedIn()">
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+                        📊 Tableau de Bord
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/etudiants" routerLinkActive="active">
+                        👨‍🎓 Étudiants
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" routerLink="/paiements" routerLinkActive="active">
+                        💰 Paiements
+                    </a>
+                </li>
+            </ul>
+
+            <!-- User info -->
+            <div class="navbar-nav ms-auto" *ngIf="isLoggedIn()">
+                <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        👤 {{ currentUser?.username }}
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#" (click)="logout(); $event.preventDefault()">🚪
+                                Déconnexion</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Login button -->
+            <div class="navbar-nav ms-auto" *ngIf="!isLoggedIn()">
+                <a class="nav-link" routerLink="/login">
+                    🔐 Connexion
+                </a>
+            </div>
+        </div>
+    </div>
+</nav>

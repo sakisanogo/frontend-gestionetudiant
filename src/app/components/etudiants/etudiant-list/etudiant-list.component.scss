@@ -1,0 +1,186 @@
+.etudiant-list-container {
+    padding: 1rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e9ecef;
+
+    h2 {
+        color: #333;
+        margin: 0;
+        font-size: 1.8rem;
+    }
+}
+
+.btn-refresh {
+    background: #17a2b8;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover:not(:disabled) {
+        background: #138496;
+        transform: translateY(-2px);
+    }
+
+    &:disabled {
+        background: #6c757d;
+        cursor: not-allowed;
+        opacity: 0.6;
+    }
+}
+
+.loading,
+.no-data,
+.error-alert {
+    text-align: center;
+    padding: 2rem;
+    margin: 2rem 0;
+    border-radius: 8px;
+}
+
+.loading {
+    background: #e3f2fd;
+    color: #1976d2;
+}
+
+.no-data {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.error-alert {
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ffcdd2;
+
+    button {
+        background: #c62828;
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-left: 1rem;
+
+        &:hover {
+            background: #b71c1c;
+        }
+    }
+}
+
+.etudiants-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1rem;
+}
+
+.etudiant-card {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        border-color: #667eea;
+    }
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid #f1f3f4;
+
+    .matricule {
+        font-weight: 600;
+        color: #667eea;
+        font-size: 1.1rem;
+    }
+
+    .btn-delete {
+        background: #dc3545;
+        color: white;
+        border: none;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+    }
+}
+
+.card-body {
+    h3 {
+        margin: 0 0 0.5rem 0;
+        color: #333;
+        font-size: 1.3rem;
+    }
+
+    .etudiant-id {
+        color: #666;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+}
+
+.card-footer {
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f3f4;
+
+    .btn-detail {
+        background: #667eea;
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        width: 100%;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: #5a6fd8;
+            transform: translateY(-2px);
+        }
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+    }
+
+    .etudiants-grid {
+        grid-template-columns: 1fr;
+    }
+}

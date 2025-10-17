@@ -1,0 +1,67 @@
+<div class="mb-4">
+    <!-- Bouton pour ouvrir le formulaire -->
+    <button *ngIf="!showForm" class="btn btn-primary" (click)="toggleForm()">
+        + Ajouter un étudiant
+    </button>
+
+    <!-- Formulaire -->
+    <div *ngIf="showForm" class="card mt-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Nouvel étudiant</h5>
+            <button (click)="toggleForm()" class="btn btn-sm btn-light">×</button>
+        </div>
+
+        <div class="card-body">
+            <form (ngSubmit)="onSubmit()" #etudiantForm="ngForm">
+
+                <!-- Champ Nom -->
+                <div class="mb-3">
+                    <label for="nom" class="form-label">Nom *</label>
+                    <input type="text" class="form-control" id="nom" name="nom" [(ngModel)]="etudiant.nom" required
+                        placeholder="Entrez le nom de l'étudiant">
+                    <div class="form-text">Le nom de famille de l'étudiant</div>
+                </div>
+
+                <!-- Champ Prénom -->
+                <div class="mb-3">
+                    <label for="prenom" class="form-label">Prénom *</label>
+                    <input type="text" class="form-control" id="prenom" name="prenom" [(ngModel)]="etudiant.prenom"
+                        required placeholder="Entrez le prénom de l'étudiant">
+                    <div class="form-text">Le prénom de l'étudiant</div>
+                </div>
+
+                <!-- Champ Matricule -->
+                <div class="mb-3">
+                    <label for="matricule" class="form-label">Matricule *</label>
+                    <input type="text" class="form-control" id="matricule" name="matricule"
+                        [(ngModel)]="etudiant.matricule" required placeholder="Ex: ETU001">
+                    <div class="form-text">Le numéro de matricule unique</div>
+                </div>
+
+                <!-- Boutons d'action -->
+                <div class="d-flex gap-2">
+                    <button type="submit" class="btn btn-success" [disabled]="!isFormValid() || isSubmitting">
+                        <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+                        {{ isSubmitting ? 'Création...' : 'Créer l\'étudiant' }}
+                    </button>
+
+                    <button type="button" class="btn btn-secondary" (click)="toggleForm()" [disabled]="isSubmitting">
+                        Annuler
+                    </button>
+                </div>
+
+                <!-- Aide validation -->
+                <div *ngIf="!isFormValid()" class="mt-2">
+                    <small class="text-warning">
+                        ⚠️ Tous les champs sont obligatoires
+                    </small>
+                </div>
+                <!-- Ajouter après les boutons d'action -->
+                <div *ngIf="error" class="mt-2">
+                    <app-error-message [message]="error"></app-error-message>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

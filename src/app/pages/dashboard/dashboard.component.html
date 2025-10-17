@@ -1,0 +1,111 @@
+<div class="container mt-4">
+    <h1 class="text-center mb-4">📊 {{ title }}</h1>
+
+    <!-- Indicateur de chargement -->
+    <div *ngIf="loading" class="text-center py-5">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="visually-hidden">Chargement...</span>
+        </div>
+        <p class="mt-3 text-muted">Chargement des données...</p>
+    </div>
+
+    <!-- Contenu principal -->
+    <div *ngIf="!loading">
+        <div class="row">
+            <!-- Carte Étudiants -->
+            <div class="col-md-4 mb-4">
+                <div class="card text-bg-primary">
+                    <div class="card-body text-center">
+                        <div class="card-icon mb-3">
+                            <i class="bi bi-people-fill" style="font-size: 2rem;"></i>
+                        </div>
+                        <h5 class="card-title">Étudiants</h5>
+                        <p class="card-text h2">{{ totalEtudiants }}</p>
+                        <p class="card-text">étudiants inscrits</p>
+                        <a routerLink="/etudiants" class="btn btn-light btn-sm">
+                            👨‍🎓 Gérer les étudiants
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte Paiements -->
+            <div class="col-md-4 mb-4">
+                <div class="card text-bg-success">
+                    <div class="card-body text-center">
+                        <div class="card-icon mb-3">
+                            <i class="bi bi-cash-coin" style="font-size: 2rem;"></i>
+                        </div>
+                        <h5 class="card-title">Paiements</h5>
+                        <p class="card-text h2">{{ totalPaiements }}</p>
+                        <p class="card-text">paiements effectués</p>
+                        <a routerLink="/paiements" class="btn btn-light btn-sm">
+                            💰 Voir les paiements
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Carte Montant Total -->
+            <div class="col-md-4 mb-4">
+                <div class="card text-bg-info">
+                    <div class="card-body text-center">
+                        <div class="card-icon mb-3">
+                            <i class="bi bi-graph-up" style="font-size: 2rem;"></i>
+                        </div>
+                        <h5 class="card-title">Montant Total</h5>
+                        <p class="card-text h4">{{ formatMontant(montantTotal) }}</p>
+                        <p class="card-text">montant collecté</p>
+                        <a routerLink="/paiements" class="btn btn-light btn-sm">
+                            📈 Détails financiers
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="card-title mb-0">🚀 Actions rapides</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-grid gap-2 d-md-flex justify-content-center">
+                            <a routerLink="/etudiants" class="btn btn-outline-primary btn-lg me-3">
+                                👨‍🎓 Etudiant
+                            </a>
+                            <a routerLink="/paiements" class="btn btn-outline-success btn-lg">
+                                💰 Paiement
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistiques récentes -->
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">📈 Aperçu du système</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-md-6">
+                                <p class="h4 text-primary">{{ totalEtudiants }}</p>
+                                <p class="text-muted">Étudiants actifs</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="h4 text-success">{{ totalPaiements }}</p>
+                                <p class="text-muted">Transactions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
