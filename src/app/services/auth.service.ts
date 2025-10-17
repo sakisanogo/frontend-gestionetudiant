@@ -35,7 +35,7 @@ export class AuthService {
     // Utiliser une requête plus simple et fiable
     const headers = this.createAuthHeaders(authRequest.username, authRequest.password);
 
-    return this.http.get(`${ApiConfig.BASE_URL}/api/etudiants`, { headers }).pipe(
+    return this.http.get(`${ApiConfig.BASE_URL}/etudiants`, { headers }).pipe(
       tap(() => {
         localStorage.setItem('currentUser', JSON.stringify(authRequest));
         this.isAuthenticated.next(true);
@@ -53,7 +53,7 @@ export class AuthService {
   loginAlternative(authRequest: AuthRequest): Observable<any> {
     const headers = this.createAuthHeaders(authRequest.username, authRequest.password);
 
-    return this.http.get(`${ApiConfig.BASE_URL}/api/auth/test`, { headers, responseType: 'text' }).pipe(
+    return this.http.get(`${ApiConfig.BASE_URL}/auth/test`, { headers, responseType: 'text' }).pipe(
       tap(() => {
         localStorage.setItem('currentUser', JSON.stringify(authRequest));
         this.isAuthenticated.next(true);
@@ -68,7 +68,7 @@ export class AuthService {
   }
 
   register(createUserDto: CreateUserDto): Observable<UserDto> {
-    return this.http.post<UserDto>(`${ApiConfig.BASE_URL}/api/auth/register`, createUserDto).pipe(
+    return this.http.post<UserDto>(`${ApiConfig.BASE_URL}/auth/register`, createUserDto).pipe(
       tap(user => {
         console.log('✅ Utilisateur créé:', user);
       }),

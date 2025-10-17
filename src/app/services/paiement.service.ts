@@ -36,13 +36,13 @@ export class PaiementService {
     return `RECU-${timestamp}-${random}`;
   }
 
-  // Créer un nouveau paiement - CORRIGÉ
+  // Créer un nouveau paiement - ✅ CORRIGÉ
   createPaiement(paiement: CreatePaiementRequest): Observable<Paiement> {
-    // Préparer les données exactement comme l'API les attend
+    // ✅ CORRECTION : Format correct pour Spring
     const paiementData = {
       montant: Number(paiement.montant),
       motif: paiement.motif.trim(),
-      etudiantId: Number(paiement.etudiantId),
+      etudiant: { id: Number(paiement.etudiantId) }, // ⚠️ CORRECTION ICI
       numeroRecu: this.generateNumeroRecu(),
       datePaiement: new Date().toISOString()
     };
