@@ -9,17 +9,13 @@ export class AuthInterceptor implements HttpInterceptor {
   constructor(private authService: AuthService) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const authHeaders = this.authService.getAuthHeaders();
+    // ✅ SPRING SECURITY GÈRE L'AUTH AVEC DES COOKIES
+    // Pas besoin d'ajouter des headers d'authentification manuellement
+    // Les cookies sont envoyés automatiquement par le navigateur
 
-    if (authHeaders.has('Authorization')) {
-      const authReq = req.clone({
-        setHeaders: {
-          Authorization: authHeaders.get('Authorization')!
-        }
-      });
-      return next.handle(authReq);
-    }
-
+    // On peut simplement passer la requête telle quelle
     return next.handle(req);
   }
+
+
 }

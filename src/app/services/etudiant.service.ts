@@ -1,59 +1,74 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { Etudiant, CreateEtudiantRequest } from '../models/etudiant.model';
 import { ApiConfig } from '../config/api.config';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class EtudiantService {
 
-  constructor(
-    private http: HttpClient,
-    private authService: AuthService
-  ) { }
+  constructor(private http: HttpClient) { }
 
   getAllEtudiants(): Observable<Etudiant[]> {
-    const headers = this.authService.getAuthHeaders();
+    console.log('🔄 Tentative de récupération depuis:', ApiConfig.ETUDIANTS_URL);
 
-    return this.http.get<Etudiant[]>(ApiConfig.ETUDIANTS_URL, { headers }).pipe(
+    return this.http.get<Etudiant[]>(ApiConfig.ETUDIANTS_URL, {
+      withCredentials: true
+    }).pipe(
       tap(etudiants => {
-        console.log('✅ Étudiants récupérés:', etudiants);
+        console.log('✅ Étudiants récupérés avec succès:', etudiants);
       }),
       catchError(error => {
         console.error('❌ Erreur récupération étudiants:', error);
-        // Propager l'erreur pour que le component puisse la gérer
-        return throwError(() => error);
+        return throwError(() => new Error(`Erreur lors du chargement des étudiants: ${error.message}`));
       })
     );
   }
 
   createEtudiant(etudiant: CreateEtudiantRequest): Observable<Etudiant> {
-    const headers = this.authService.getAuthHeaders();
+    console.log('🔄 Création étudiant sur:', ApiConfig.ETUDIANTS_URL);
 
-    return this.http.post<Etudiant>(ApiConfig.ETUDIANTS_URL, etudiant, { headers }).pipe(
+    return this.http.post<Etudiant>(ApiConfig.ETUDIANTS_URL, etudiant, {
+      withCredentials: true
+    }).pipe(
       tap(newEtudiant => {
         console.log('✅ Étudiant créé avec succès:', newEtudiant);
       }),
       catchError(error => {
         console.error('❌ Erreur création étudiant:', error);
-        return throwError(() => error);
+        return throwError(() => new Error(`Erreur lors de la création: ${error.message}`));
       })
     );
   }
 
   deleteEtudiant(id: number): Observable<void> {
-    const headers = this.authService.getAuthHeaders();
+    const deleteUrl = `${ApiConfig.ETUDIANTS_URL}/${id}`;
+    console.log('🔄 Suppression étudiant sur:', deleteUrl);
 
-    return this.http.delete<void>(`${ApiConfig.ETUDIANTS_URL}/${id}`, { headers }).pipe(
+    return this.http.delete<void>(deleteUrl, {
+      withCredentials: true
+    }).pipe(
       tap(() => {
         console.log('✅ Étudiant supprimé:', id);
       }),
       catchError(error => {
         console.error('❌ Erreur suppression étudiant:', error);
+        return throwError(() => new Error(`Erreur lors de la suppression: ${error.message}`));
+      })
+    );
+  }
+
+  // Méthode pour tester la connexion
+  testConnection(): Observable<any> {
+    return this.http.get(ApiConfig.ETUDIANTS_URL, {
+      withCredentials: true
+    }).pipe(
+      tap(() => console.log('✅ Connexion API réussie')),
+      catchError(error => {
+        console.error('❌ Test connexion échoué:', error);
         return throwError(() => error);
       })
     );

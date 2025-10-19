@@ -37,23 +37,8 @@ export class LoginComponent {
         });
     }
 
-    // Méthode alternative si la première échoue
-    onAlternativeLogin(): void {
-        this.loading = true;
-        this.errorMessage = '';
-
-        this.authService.loginAlternative(this.credentials).subscribe({
-            next: () => {
-                console.log('✅ Connexion réussie (méthode alternative)');
-                this.router.navigate(['/dashboard']);
-            },
-            error: (error) => {
-                console.error('❌ Erreur de connexion alternative:', error);
-                this.errorMessage = this.getErrorMessage(error);
-                this.loading = false;
-            }
-        });
-    }
+    // ✅ SUPPRIMER la méthode alternative (plus nécessaire)
+    // private getErrorMessage reste identique
 
     // Message d'erreur personnalisé selon le type d'erreur
     private getErrorMessage(error: any): string {
@@ -61,8 +46,6 @@ export class LoginComponent {
             return 'Erreur de connexion au serveur. Vérifiez que le serveur est démarré.';
         } else if (error.status === 401) {
             return 'Identifiants incorrects. Veuillez réessayer.';
-        } else if (error.status === 404) {
-            return 'Endpoint non trouvé. Utilisez la méthode alternative.';
         } else {
             return 'Erreur de connexion. Veuillez réessayer.';
         }

@@ -23,6 +23,7 @@ import { PaiementsPageComponent } from './pages/paiements-page/paiements-page.co
 
 // ✅ COMPOSANTS AUTHENTIFICATION AJOUTÉS
 import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component'; // ✅ AJOUT
 
 // Services
 import { EtudiantService } from './services/etudiant.service';
@@ -50,7 +51,8 @@ import { AuthGuard } from './guards/auth.guard';
     DashboardComponent,
     EtudiantsPageComponent,
     PaiementsPageComponent,
-    LoginComponent // ✅ AJOUT - Composant de connexion
+    LoginComponent, // Composant de connexion
+    RegisterComponent // ✅ AJOUT - Composant d'inscription
   ],
   imports: [
     BrowserModule,
@@ -62,8 +64,8 @@ import { AuthGuard } from './guards/auth.guard';
   providers: [
     EtudiantService,
     PaiementService,
-    AuthService, // ✅ AJOUT - Service d'authentification
-    AuthGuard // ✅ AJOUT - Garde de route
+    AuthService, // Service d'authentification
+    AuthGuard // Garde de route
   ],
   bootstrap: [AppComponent]
 })

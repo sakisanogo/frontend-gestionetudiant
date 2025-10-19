@@ -9,17 +9,15 @@ export interface AuthRequest {
   password: string;
 }
 
-export interface UserDto {
+export interface RegisterRequest {
+  username: string;
+  password: string;
+}
+
+export interface RegisterResponse {
   id: number;
   username: string;
   roles: string[];
-  enabled: boolean;
-}
-
-export interface CreateUserDto {
-  username: string;
-  password: string;
-  role?: string;
 }
 
 @Injectable({
@@ -31,15 +29,26 @@ export class AuthService {
 
   constructor(private http: HttpClient) { }
 
+  // ✅ CONNEXION AVEC SPRING SECURITY
   login(authRequest: AuthRequest): Observable<any> {
-    // Utiliser une requête plus simple et fiable
-    const headers = this.createAuthHeaders(authRequest.username, authRequest.password);
+    // Spring Security utilise FormData pour le login
+    const formData = new FormData();
+    formData.append('username', authRequest.username);
+    formData.append('password', authRequest.password);
 
-    return this.http.get(`${ApiConfig.BASE_URL}/etudiants`, { headers }).pipe(
-      tap(() => {
-        localStorage.setItem('currentUser', JSON.stringify(authRequest));
+    return this.http.post(`${ApiConfig.BASE_URL}/login`, formData, {
+      observe: 'response',
+      withCredentials: true // Important pour les cookies de session
+    }).pipe(
+      tap((response: any) => {
+        // Stocker les infos utilisateur
+        const userInfo = {
+          username: authRequest.username,
+          authenticated: true
+        };
+        localStorage.setItem('currentUser', JSON.stringify(userInfo));
         this.isAuthenticated.next(true);
-        console.log('✅ Connexion réussie');
+        console.log('✅ Connexion réussie avec Spring Security');
       }),
       catchError(error => {
         console.error('❌ Erreur de connexion:', error);
@@ -49,28 +58,14 @@ export class AuthService {
     );
   }
 
-  // Alternative si l'endpoint /etudiants ne fonctionne pas
-  loginAlternative(authRequest: AuthRequest): Observable<any> {
-    const headers = this.createAuthHeaders(authRequest.username, authRequest.password);
-
-    return this.http.get(`${ApiConfig.BASE_URL}/auth/test`, { headers, responseType: 'text' }).pipe(
-      tap(() => {
-        localStorage.setItem('currentUser', JSON.stringify(authRequest));
-        this.isAuthenticated.next(true);
-        console.log('✅ Connexion réussie (alternative)');
-      }),
-      catchError(error => {
-        console.error('❌ Erreur de connexion alternative:', error);
-        this.logout();
-        return throwError(() => error);
-      })
-    );
-  }
-
-  register(createUserDto: CreateUserDto): Observable<UserDto> {
-    return this.http.post<UserDto>(`${ApiConfig.BASE_URL}/auth/register`, createUserDto).pipe(
+  // ✅ INSCRIPTION - NOUVEAU ENDPOINT
+  register(registerData: RegisterRequest): Observable<RegisterResponse> {
+    return this.http.post<RegisterResponse>(
+      `${ApiConfig.BASE_URL}/api/auth/register`,
+      registerData
+    ).pipe(
       tap(user => {
-        console.log('✅ Utilisateur créé:', user);
+        console.log('✅ Utilisateur inscrit avec succès:', user);
       }),
       catchError(error => {
         console.error('❌ Erreur inscription:', error);
@@ -80,46 +75,20 @@ export class AuthService {
   }
 
   logout(): void {
+    // Appeler le logout Spring Security
+    this.http.post(`${ApiConfig.BASE_URL}/logout`, {}, {
+      withCredentials: true
+    }).subscribe();
+
     localStorage.removeItem('currentUser');
     this.isAuthenticated.next(false);
     console.log('🚪 Déconnexion effectuée');
   }
 
-  // CORRECTION PRINCIPALE : Méthode simplifiée et sécurisée
-  getAuthHeaders(): HttpHeaders {
-    const currentUser = this.getCurrentUser();
-    if (currentUser && currentUser.username && currentUser.password) {
-      return this.createAuthHeaders(currentUser.username, currentUser.password);
-    }
-    // Retourne des headers vides mais valides
-    return new HttpHeaders();
-  }
-
-  // Méthode utilitaire pour créer les headers d'authentification
-  private createAuthHeaders(username: string, password: string): HttpHeaders {
-    const authString = btoa(`${username}:${password}`);
-    return new HttpHeaders({
-      'Authorization': `Basic ${authString}`
-    });
-  }
-
-  getCurrentUser(): AuthRequest | null {
+  // ✅ SUPPRIMER getAuthHeaders() - Plus nécessaire avec les cookies
+  getCurrentUser(): any {
     const userStr = localStorage.getItem('currentUser');
-    if (userStr) {
-      try {
-        const user = JSON.parse(userStr);
-        // Vérifier que l'utilisateur a les propriétés requises
-        if (user && user.username && user.password) {
-          return user;
-        }
-        return null;
-      } catch (e) {
-        console.error('❌ Erreur parsing user data');
-        this.logout();
-        return null;
-      }
-    }
-    return null;
+    return userStr ? JSON.parse(userStr) : null;
   }
 
   private hasToken(): boolean {
@@ -128,9 +97,5 @@ export class AuthService {
 
   isLoggedIn(): boolean {
     return this.isAuthenticated.value;
-  }
-
-  hasRole(role: string): boolean {
-    return true;
   }
 }

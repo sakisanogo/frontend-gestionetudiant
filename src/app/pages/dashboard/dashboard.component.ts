@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { EtudiantService } from '../../services/etudiant.service';
 import { PaiementService } from '../../services/paiement.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -16,7 +18,9 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private etudiantService: EtudiantService,
-    private paiementService: PaiementService
+    private paiementService: PaiementService,
+    private authService: AuthService, // ✅ AJOUTER AuthService
+    private router: Router // ✅ AJOUTER Router
   ) { }
 
   ngOnInit(): void {
@@ -50,6 +54,12 @@ export class DashboardComponent implements OnInit {
         this.checkLoadingComplete();
       }
     });
+  }
+
+  // ✅ AJOUTER LA MÉTHODE DE DÉCONNEXION
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   private checkLoadingComplete(): void {
