@@ -30,28 +30,23 @@ export class EtudiantFormComponent {
   }
 
   onSubmit(): void {
-    if (this.isFormValid()) {
+    // ✅ Validation avec regex avant envoi
+    if (this.isFormValid() && this.isFormDataValid()) {
       this.isSubmitting = true;
       this.error = '';
 
       this.etudiantService.createEtudiant(this.etudiant).subscribe({
         next: (newEtudiant) => {
-          // ✅ Succès - étudiant créé dans la base de données
           this.etudiantCreated.emit(this.etudiant);
           this.resetForm();
           this.isSubmitting = false;
           this.showForm = false;
-
-          // Message de succès
           alert(`✅ Étudiant créé avec succès!\n${newEtudiant.prenom} ${newEtudiant.nom} - ${newEtudiant.matricule}`);
         },
         error: (err) => {
-          // ❌ Erreur - backend non accessible
           this.error = 'Erreur: Le serveur backend n\'est pas accessible';
           this.isSubmitting = false;
           console.error('Erreur création étudiant:', err);
-
-          // Message d'erreur clair
           alert('❌ Impossible de créer l\'étudiant. Vérifiez que le serveur Spring Boot est démarré sur le port 8082.');
         }
       });
@@ -67,9 +62,52 @@ export class EtudiantFormComponent {
     this.error = '';
   }
 
+  // Validation basique (champs non vides)
   isFormValid(): boolean {
     return this.etudiant.nom.trim().length > 0 &&
       this.etudiant.prenom.trim().length > 0 &&
       this.etudiant.matricule.trim().length > 0;
+  }
+
+  // ✅ NOUVELLE MÉTHODE : Validation avec regex
+  isFormDataValid(): boolean {
+    // Regex pour noms et prénoms (lettres, espaces, tirets, apostrophes)
+    const nameRegex = /^[a-zA-ZÀ-ÿ\s\-']+$/;
+
+    // Regex pour matricule (lettres majuscules et chiffres)
+    const matriculeRegex = /^[A-Z0-9]+$/;
+
+    const isNomValid = nameRegex.test(this.etudiant.nom.trim());
+    const isPrenomValid = nameRegex.test(this.etudiant.prenom.trim());
+    const isMatriculeValid = matriculeRegex.test(this.etudiant.matricule.trim());
+
+    // Messages d'erreur spécifiques
+    if (!isNomValid) {
+      this.error = 'Le nom contient des caractères non autorisés.';
+      return false;
+    }
+
+    if (!isPrenomValid) {
+      this.error = 'Le prénom contient des caractères non autorisés. ';
+      return false;
+    }
+
+    if (!isMatriculeValid) {
+      this.error = 'Le matricule contient des caractères non autorisés. ';
+      return false;
+    }
+
+    return true;
+  }
+
+  // ✅ SUPPRIMEZ ou GARDEZ SANS BLOQUAGE les méthodes de vérification
+  verifierCaractere(event: KeyboardEvent): void {
+    // Laissé vide pour permettre toute saisie
+    // La validation se fera au moment de l'enregistrement
+  }
+
+  verifierChiffres(event: KeyboardEvent): void {
+    // Laissé vide pour permettre toute saisie
+    // La validation se fera au moment de l'enregistrement
   }
 }

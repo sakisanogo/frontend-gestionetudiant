@@ -19,7 +19,8 @@
                     <label for="nom" class="form-label">Nom *</label>
                     <input type="text" class="form-control" id="nom" name="nom" [(ngModel)]="etudiant.nom" required
                         placeholder="Entrez le nom de l'étudiant">
-                    <div class="form-text">Le nom de famille de l'étudiant</div>
+                    <div class="form-text">Le nom de famille de l'étudiant (lettres, espaces, tirets et apostrophes
+                        uniquement)</div>
                 </div>
 
                 <!-- Champ Prénom -->
@@ -27,7 +28,8 @@
                     <label for="prenom" class="form-label">Prénom *</label>
                     <input type="text" class="form-control" id="prenom" name="prenom" [(ngModel)]="etudiant.prenom"
                         required placeholder="Entrez le prénom de l'étudiant">
-                    <div class="form-text">Le prénom de l'étudiant</div>
+                    <div class="form-text">Le prénom de l'étudiant (lettres, espaces, tirets et apostrophes uniquement)
+                    </div>
                 </div>
 
                 <!-- Champ Matricule -->
@@ -35,12 +37,14 @@
                     <label for="matricule" class="form-label">Matricule *</label>
                     <input type="text" class="form-control" id="matricule" name="matricule"
                         [(ngModel)]="etudiant.matricule" required placeholder="Ex: ETU001">
-                    <div class="form-text">Le numéro de matricule unique</div>
+                    <div class="form-text">Le numéro de matricule unique (lettres majuscules et chiffres uniquement)
+                    </div>
                 </div>
 
                 <!-- Boutons d'action -->
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-success" [disabled]="!isFormValid() || isSubmitting">
+                    <button type="submit" class="btn btn-success"
+                        [disabled]="!isFormValid() || isSubmitting || !isFormDataValid()">
                         <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
                         {{ isSubmitting ? 'Création...' : 'Créer l\'étudiant' }}
                     </button>
@@ -56,7 +60,19 @@
                         ⚠️ Tous les champs sont obligatoires
                     </small>
                 </div>
-                <!-- Ajouter après les boutons d'action -->
+
+                <!-- Message d'erreur regex -->
+                <div *ngIf="isFormValid() && !isFormDataValid()" class="mt-2">
+                    <small class="text-danger">
+                        ⚠️ Format invalide :
+                        <span *ngIf="!isNomValid()">Le nom contient des caractères non autorisés</span>
+                        <span *ngIf="!isPrenomValid()">Le prénom contient des caractères non autorisés</span>
+                        <span *ngIf="!isMatriculeValid()">Le matricule doit contenir uniquement des lettres majuscules
+                            et chiffres</span>
+                    </small>
+                </div>
+
+                <!-- Message d'erreur serveur -->
                 <div *ngIf="error" class="mt-2">
                     <app-error-message [message]="error"></app-error-message>
                 </div>

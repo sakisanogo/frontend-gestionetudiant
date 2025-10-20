@@ -1,21 +1,23 @@
-<div class="paiement-form-container">
-    <button *ngIf="!showForm" (click)="toggleForm()" class="btn btn-primary mb-3">
-        + Nouveau Paiement
+<div class="mb-4">
+    <!-- Bouton pour ouvrir le formulaire -->
+    <button *ngIf="!showForm" class="btn btn-primary" (click)="toggleForm()">
+        + Nouveau paiement
     </button>
 
-    <div *ngIf="showForm" class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h5 class="mb-0">Nouveau Paiement</h5>
-            <button (click)="toggleForm()" class="btn btn-sm btn-outline-secondary">×</button>
+    <!-- Formulaire -->
+    <div *ngIf="showForm" class="card mt-3">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+            <h5 class="card-title mb-0">Nouveau paiement</h5>
+            <button (click)="toggleForm()" class="btn btn-sm btn-light">×</button>
         </div>
 
         <div class="card-body">
             <form (ngSubmit)="onSubmit()" #paiementForm="ngForm">
 
-                <!-- Étudiant -->
+                <!-- Champ Étudiant -->
                 <div class="mb-3">
-                    <label for="etudiantId" class="form-label">Étudiant *</label>
-                    <select id="etudiantId" [(ngModel)]="paiement.etudiantId" name="etudiantId" class="form-select"
+                    <label for="etudiant" class="form-label">Étudiant *</label>
+                    <select class="form-select" id="etudiant" name="etudiant" [(ngModel)]="paiement.etudiantId"
                         required>
                         <option value="0">Sélectionnez un étudiant</option>
                         <option *ngFor="let etudiant of etudiants" [value]="etudiant.id">
@@ -24,36 +26,81 @@
                     </select>
                 </div>
 
-                <!-- Montant -->
+                <!-- Champ Montant -->
                 <div class="mb-3">
                     <label for="montant" class="form-label">Montant (FCFA) *</label>
-                    <input type="number" id="montant" [(ngModel)]="paiement.montant" name="montant" class="form-control"
-                        placeholder="Entrez le montant" min="20000" max="500000" required>
+                    <input type="number" class="form-control" id="montant" name="montant" [(ngModel)]="paiement.montant"
+                        required min="1" step="0.01" (input)="onMontantInput($event)"
+                        [class.is-invalid]="!isMontantValid() && paiement.montant > 0"
+                        [class.is-valid]="isMontantValid() && paiement.montant > 0" placeholder="Entrez le montant">
+
+                    <!-- ✅ Message d'erreur pour montant trop élevé -->
+                    <div *ngIf="!isMontantValid() && paiement.montant > 0" class="invalid-feedback">
+                        ❌ Le montant ne peut pas dépasser 1,000,000 FCFA
+                    </div>
+
+                    <!-- ✅ Message de succès -->
+                    <div *ngIf="isMontantValid() && paiement.montant > 0" class="valid-feedback">
+                        ✅ Montant valide
+                    </div>
+
+                    <div class="form-text">
+                        Le montant doit être compris entre 1 et 1,000,000 FCFA
+                        <span *ngIf="paiement.montant > 0" class="ms-2 fw-bold">
+                            ({{ paiement.montant | number:'1.0-2' }} FCFA)
+                        </span>
+                    </div>
                 </div>
 
-                <!-- Motif -->
+                <!-- Champ Motif -->
                 <div class="mb-3">
                     <label for="motif" class="form-label">Motif *</label>
-                    <textarea id="motif" [(ngModel)]="paiement.motif" name="motif" class="form-control"
-                        placeholder="Motif du paiement" rows="3" required></textarea>
+                    <select class="form-select" id="motif" name="motif" [(ngModel)]="paiement.motif" required
+                        [class.is-invalid]="!isMotifValid() && paiement.motif.trim().length > 0"
+                        [class.is-valid]="isMotifValid() && paiement.motif.trim().length > 0">
+                        <option value="">Sélectionnez un motif</option>
+                        <option *ngFor="let motif of motifs" [value]="motif">{{ motif }}</option>
+                    </select>
+
+                    <!-- ✅ Message d'erreur pour motif -->
+                    <div *ngIf="!isMotifValid() && paiement.motif.trim().length > 0" class="invalid-feedback">
+                        ❌ Le motif contient des caractères non autorisés
+                    </div>
+
+                    <div class="form-text">Ou saisissez un motif personnalisé ci-dessous</div>
+
+                    <!-- Champ pour motif personnalisé -->
+                    <input *ngIf="paiement.motif === 'Autre'" type="text" class="form-control mt-2"
+                        [(ngModel)]="paiement.motif" name="motifPersonnalise" placeholder="Précisez le motif"
+                        [class.is-invalid]="!isMotifValid() && paiement.motif.trim().length > 0"
+                        [class.is-valid]="isMotifValid() && paiement.motif.trim().length > 0">
                 </div>
 
-                <!-- Message d'erreur -->
-                <div *ngIf="error" class="alert alert-danger">
-                    {{ error }}
-                </div>
-
-                <!-- Boutons -->
+                <!-- Boutons d'action -->
                 <div class="d-flex gap-2">
-                    <button type="submit" class="btn btn-success" [disabled]="!isFormValid() || isSubmitting">
+                    <button type="submit" class="btn btn-success"
+                        [disabled]="!isFormValid() || isSubmitting || !isFormDataValid()">
                         <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
                         {{ isSubmitting ? 'Création...' : 'Créer le paiement' }}
                     </button>
 
-                    <button type="button" (click)="toggleForm()" class="btn btn-outline-secondary">
+                    <button type="button" class="btn btn-secondary" (click)="toggleForm()" [disabled]="isSubmitting">
                         Annuler
                     </button>
                 </div>
+
+                <!-- Messages de validation généraux -->
+                <div *ngIf="!isFormValid()" class="mt-2">
+                    <small class="text-warning">
+                        ⚠️ Tous les champs sont obligatoires
+                    </small>
+                </div>
+
+                <!-- Message d'erreur serveur -->
+                <div *ngIf="error && isFormDataValid()" class="mt-2">
+                    <app-error-message [message]="error"></app-error-message>
+                </div>
+
             </form>
         </div>
     </div>

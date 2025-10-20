@@ -1,10 +1,12 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+
 
 // Components
 import { EtudiantListComponent } from './components/etudiants/etudiant-list/etudiant-list.component';
@@ -20,6 +22,8 @@ import { ErrorMessageComponent } from './components/shared/error-message/error-m
 import { DashboardComponent } from './pages/dashboard/dashboard.component';
 import { EtudiantsPageComponent } from './pages/etudiants-page/etudiants-page.component';
 import { PaiementsPageComponent } from './pages/paiements-page/paiements-page.component';
+
+
 
 // ✅ COMPOSANTS AUTHENTIFICATION AJOUTÉS
 import { LoginComponent } from './components/login/login.component';
