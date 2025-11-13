@@ -106,3 +106,8 @@ export class EtudiantService {
     this.loadInitialData();
   }
 }
+
+/*$env:NODE_OPTIONS="--openssl-legacy-provider"
+>> 
+>> # Puis relancez Angular :
+>> ng serve*/
