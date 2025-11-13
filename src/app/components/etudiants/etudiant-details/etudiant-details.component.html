@@ -28,24 +28,31 @@
                 </div>
             </div>
 
+            <!-- Section paiements -->
             <div class="paiements-section">
                 <div class="section-header">
                     <h3>Historique des Paiements</h3>
-                    <button class="btn-toggle-paiements" (click)="togglePaiements()">
+                    <!-- Bouton conditionnel basé sur hasPaiements -->
+                    <button *ngIf="hasPaiements" class="btn-toggle-paiements" (click)="togglePaiements()">
                         {{ showPaiements ? 'Masquer' : 'Afficher' }} les paiements
                     </button>
                 </div>
 
-                <div *ngIf="showPaiements" class="paiements-list">
+                <!-- Contenu conditionnel -->
+                <div *ngIf="showPaiements || !hasPaiements" class="paiements-list">
+
+                    <!-- État de chargement -->
                     <div *ngIf="loading" class="loading">
                         <p>Chargement des paiements en cours...</p>
                     </div>
 
-                    <div *ngIf="!loading && paiements.length === 0" class="no-data">
+                    <!-- Aucun paiement -->
+                    <div *ngIf="!loading && !hasPaiements" class="no-data">
                         <p>Aucun paiement enregistré pour cet étudiant</p>
                     </div>
 
-                    <div *ngIf="!loading && paiements.length > 0" class="paiements-content">
+                    <!-- Liste des paiements -->
+                    <div *ngIf="!loading && hasPaiements && showPaiements" class="paiements-content">
                         <div class="total-paiements">
                             <strong>Total des paiements: {{ formatMontant(totalPaiements) }}</strong>
                         </div>

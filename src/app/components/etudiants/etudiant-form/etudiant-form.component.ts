@@ -30,27 +30,37 @@ export class EtudiantFormComponent {
   }
 
   onSubmit(): void {
-    // ✅ Validation avec regex avant envoi
-    if (this.isFormValid() && this.isFormDataValid()) {
-      this.isSubmitting = true;
-      this.error = '';
+    // Réinitialise l'erreur avant validation
+    this.error = '';
 
-      this.etudiantService.createEtudiant(this.etudiant).subscribe({
-        next: (newEtudiant) => {
-          this.etudiantCreated.emit(this.etudiant);
-          this.resetForm();
-          this.isSubmitting = false;
-          this.showForm = false;
-          alert(`✅ Étudiant créé avec succès!\n${newEtudiant.prenom} ${newEtudiant.nom} - ${newEtudiant.matricule}`);
-        },
-        error: (err) => {
-          this.error = 'Erreur: Le serveur backend n\'est pas accessible';
-          this.isSubmitting = false;
-          console.error('Erreur création étudiant:', err);
-          alert('❌ Impossible de créer l\'étudiant. Vérifiez que le serveur Spring Boot est démarré sur le port 8082.');
-        }
-      });
+    // Validation des champs vides
+    if (!this.isFormValid()) {
+      this.error = 'Tous les champs sont obligatoires';
+      return;
     }
+
+    // Validation avec regex
+    if (!this.isFormDataValid()) {
+      return; // Les messages d'erreur spécifiques sont déjà définis dans isFormDataValid
+    }
+
+    this.isSubmitting = true;
+
+    this.etudiantService.createEtudiant(this.etudiant).subscribe({
+      next: (newEtudiant) => {
+        this.etudiantCreated.emit(this.etudiant);
+        this.resetForm();
+        this.isSubmitting = false;
+        this.showForm = false;
+        alert(`✅ Étudiant créé avec succès!\n${newEtudiant.prenom} ${newEtudiant.nom} - ${newEtudiant.matricule}`);
+      },
+      error: (err) => {
+        this.error = 'Les données d\'un champ existe dans la base dte données';
+        this.isSubmitting = false;
+        console.error('Erreur création étudiant:', err);
+        alert('❌ Impossible de créer l\'étudiant. Vérification des doublons');
+      }
+    });
   }
 
   resetForm(): void {
@@ -69,7 +79,7 @@ export class EtudiantFormComponent {
       this.etudiant.matricule.trim().length > 0;
   }
 
-  // ✅ NOUVELLE MÉTHODE : Validation avec regex
+  // Validation avec regex
   isFormDataValid(): boolean {
     // Regex pour noms et prénoms (lettres, espaces, tirets, apostrophes)
     const nameRegex = /^[a-zA-ZÀ-ÿ\s\-']+$/;
@@ -88,19 +98,19 @@ export class EtudiantFormComponent {
     }
 
     if (!isPrenomValid) {
-      this.error = 'Le prénom contient des caractères non autorisés. ';
+      this.error = 'Le prénom contient des caractères non autorisés.';
       return false;
     }
 
     if (!isMatriculeValid) {
-      this.error = 'Le matricule contient des caractères non autorisés. ';
+      this.error = 'Le matricule contient des caractères non autorisés.';
       return false;
     }
 
     return true;
   }
 
-  // ✅ SUPPRIMEZ ou GARDEZ SANS BLOQUAGE les méthodes de vérification
+  // Méthodes de vérification des caractères (laissées vides)
   verifierCaractere(event: KeyboardEvent): void {
     // Laissé vide pour permettre toute saisie
     // La validation se fera au moment de l'enregistrement
@@ -111,3 +121,5 @@ export class EtudiantFormComponent {
     // La validation se fera au moment de l'enregistrement
   }
 }
+
+// setx NODE_OPTIONS "--openssl-legacy-provider"
